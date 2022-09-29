@@ -1,3 +1,4 @@
+[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-c66648af7eb3fe8bc4f294546bfd86ef473780cde1dea487d3c4ff354943c9ae.svg)](https://classroom.github.com/online_ide?assignment_repo_id=8701401&assignment_repo_type=AssignmentRepo)
 # Processing BED files (Part 1)
 
 In this, and the next, project we will look at [BED files](https://en.wikipedia.org/wiki/BED_(file_format)), or at least a slightly simplified version of them. BED files are a textual file format developed for storing genomic information in a form that is readable for both humans and computers, and while it is on the simpler side of file formats, it resembles other formats you are likely to work with in your future career. The two projects we will do with BED files will show you have a little bit of computational thinking will help you when working with this kind of data.
