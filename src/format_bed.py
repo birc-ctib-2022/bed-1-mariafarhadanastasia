@@ -32,5 +32,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    parse_line()
-    print_line()
+    parse_line(line)
+    print_line(line)
