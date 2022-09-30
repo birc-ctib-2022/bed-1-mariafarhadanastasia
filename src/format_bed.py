@@ -32,4 +32,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main(args.infile,args.outfile)
+    parse_line()
+    print_line()
