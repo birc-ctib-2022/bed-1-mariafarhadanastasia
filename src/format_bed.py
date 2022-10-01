@@ -3,9 +3,9 @@
 import argparse  # we use this module for option parsing. See main for details.
 
 import sys
-from typing import TextIO
+from typing import NamedTuple, TextIO
 from bed import (
-    parse_line, print_line
+    BedLine, parse_line, print_line
 )
 
 
@@ -29,8 +29,12 @@ def main() -> None:
 
     # With all the options handled, we just need to do the real work
     # FIXME: put your code here
+    for line in args.infile:
+        parse_line(line)
+        f=open(args.outfile)
+        f.write(print_line(line))
+        f.close()
 
 
 if __name__ == '__main__':
-    parse_line(line)
-    print_line(line)
+    main()
