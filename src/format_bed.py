@@ -4,6 +4,7 @@ import argparse  # we use this module for option parsing. See main for details.
 
 import sys
 from typing import NamedTuple, TextIO
+from unicodedata import name
 from bed import (
     BedLine, parse_line, print_line
 )
@@ -28,13 +29,13 @@ def main() -> None:
     args = argparser.parse_args()
 
     # With all the options handled, we just need to do the real work
-    # FIXME: put your code here
-    for line in args.infile:
-        parse_line(line)
-        f=open(args.outfile)
-        f.write(print_line(line))
-        f.close()
-
+    fin=open(args.infile.name, mode='r')
+    fout=open(args.outfile.name, mode='w')
+    for line in fin:
+        BedLine=parse_line(line)
+        print_line(BedLine, fout)
+    fout.close()
+    fin.close()
 
 if __name__ == '__main__':
     main()
