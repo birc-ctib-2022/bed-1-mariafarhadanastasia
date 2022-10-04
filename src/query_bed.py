@@ -4,7 +4,7 @@ import argparse  # we use this module for option parsing. See main for details.
 
 import sys
 from bed import (
-    parse_line, print_line
+    BedLine, parse_line, print_line
 )
 from query import Table
 
@@ -29,6 +29,28 @@ def main() -> None:
     # With all the options handled, we just need to do the real work
     # FIXME: put your code here
 
+    with open(args.outfile.name, 'w') as output_file:
+
+        # Save data to variable
+        with open(args.bed.name) as file:
+            bed_table = Table()
+
+            line = file.readline()
+            while line:
+                bed_table.add_line(parse_line(line))
+                line = file.readline()
+
+        with open(args.query.name) as file:
+
+            line = file.readline()
+            while line:
+                chrom, start, end = line.split()
+                bedline = bed_table.get_chrom(chrom)
+                for i in range(0,len(bedline)):
+                    if bedline[i].chrom_start >= int(start) and bedline[i].chrom_end <= int(end):
+                        print_line(bedline[i], output_file)
+
+                line = file.readline()
 
 if __name__ == '__main__':
     main()
