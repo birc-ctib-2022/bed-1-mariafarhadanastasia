@@ -29,32 +29,28 @@ def main() -> None:
     # With all the options handled, we just need to do the real work
     # FIXME: put your code here
 
-    # Define and open output_file. 
-    # We will print our query inside this file. 
-    with open(args.outfile.name) as output_file:
+    # Open and insert every line in BED file into 'bed_table' table.
+    with open(args.bed.name) as file:
+        bed_table = Table() # Create a Table object.
+        line = file.readline() # Read one line in the BED file.
+        while line: # Run this loop while we still have a line to read in BED file.
+            bed_table.add_line(parse_line(line)) # Add the line to our 'bed_table' object.
+            line = file.readline() # Read the next line.
 
-        # Open and insert every line in BED file into 'bed_table' table.
-        with open(args.bed.name) as file:
-            bed_table = Table() # Create a Table object.
-            line = file.readline() # Read one line in the BED file.
-            while line: # Run this loop while we still have a line to read in BED file.
-                bed_table.add_line(parse_line(line)) # Add the line to our 'bed_table' object.
-                line = file.readline() # Read the next line.
-
-        # Open the file we want to query.
-        with open(args.query.name) as file:
-            line = file.readline() # Read one line in the query file.
-            while line: # Run this loop while we still have a line to read in query file.
-                chrom, start, end = line.split() # Get chrom, chrom_start, chrom_end in query file.
-                # Get every line in 'bed_table' that have the same chromosome 
-                # in the line of query we currently read
-                bedline = bed_table.get_chrom(chrom)
-                # Check every line in 'bed_table' that overlaps with our query.
-                # Then print the overlapping line to our output_file using print_line().
-                for i in range(0,len(bedline)):
-                    if bedline[i].chrom_start >= int(start) and bedline[i].chrom_end <= int(end):
-                        print_line(bedline[i], output_file)
-                line = file.readline() # Read the next line.
+    # Open the file we want to query.
+    with open(args.query.name) as file:
+        line = file.readline() # Read one line in the query file.
+        while line: # Run this loop while we still have a line to read in query file.
+            chrom, start, end = line.split() # Get chrom, chrom_start, chrom_end in query file.
+            # Get every line in 'bed_table' that have the same chromosome 
+            # in the line of query we currently read
+            bedline = bed_table.get_chrom(chrom)
+            # Check every line in 'bed_table' that overlaps with our query.
+            # Then print the overlapping line to our output_file using print_line().
+            for i in range(0,len(bedline)):
+                if bedline[i].chrom_start >= int(start) and bedline[i].chrom_end <= int(end):
+                    print_line(bedline[i], args.outfile)
+            line = file.readline() # Read the next line.
 
 if __name__ == '__main__':
     main()
