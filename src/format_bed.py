@@ -29,12 +29,8 @@ def main() -> None:
     args = argparser.parse_args()
 
     # With all the options handled, we just need to do the real work
-    fin=open(args.infile.name, mode='r')
-    fout=open(args.outfile.name, mode='w')
-    for line in fin:
-        print_line(parse_line(line), fout)
-    fout.close()
-    fin.close()
+    for line in args.infile:
+        print_line(parse_line(line), args.outfile)
 
 if __name__ == '__main__':
     main()
