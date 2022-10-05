@@ -32,8 +32,7 @@ def main() -> None:
     fin=open(args.infile.name, mode='r')
     fout=open(args.outfile.name, mode='w')
     for line in fin:
-        BedLine=parse_line(line)
-        print_line(BedLine, fout)
+        print_line(parse_line(line), fout)
     fout.close()
     fin.close()
 
