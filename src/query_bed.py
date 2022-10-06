@@ -2,11 +2,67 @@
 
 import argparse  # we use this module for option parsing. See main for details.
 
+from typing import TextIO, Tuple
 import sys
 from bed import (
     BedLine, parse_line, print_line
 )
 from query import Table
+
+
+def get_bed_table(infile: TextIO) -> Table:
+    """
+    Get and insert the bed file into a 'Table'.
+    """
+    # Open and insert every line in BED file into 'bed_table' table.
+    bed_table = Table()
+    for line in infile:
+        bed_table.add_line(parse_line(line))
+
+    return bed_table
+
+
+def is_overlapping(query_lower: int, query_upper: int, feature_start: int, feature_end: int) -> bool:
+    """
+    This function wants to check whether the feature in our BED file is within the query range or not.
+    > query_lower:
+    > query_upper:
+    > feature_start:
+    > feature_end:
+
+    >>> is_overlapping(0, 100, 2, 3)
+    True
+    >>> is_overlapping(0, 5, 2, 6)
+    False
+    """
+    if query_lower <= feature_start and query_upper >= feature_end:
+        return True 
+    else:
+        return False
+
+
+def split_query_line(line: str) -> Tuple[str, int, int]:
+    """
+    >>> split_query_line("chrom5  841     842")
+    ('chrom5', 841, 842)
+    """
+    chrom, start, end = line.split()
+    return chrom, int(start), int(end)
+
+
+def process_query(fbed: TextIO, fquery: TextIO, fout:TextIO) -> None:
+    """
+    """
+    bed_table = get_bed_table(fbed)
+
+    for line in fquery:
+        chrom, query_start, query_end = split_query_line(line)
+        bedline = bed_table.get_chrom(chrom)
+
+        for i in range(0, len(bedline)):
+                if is_overlapping(query_start, query_end, bedline[i].chrom_start, bedline[i].chrom_end):
+                    print_line(bedline[i], fout)
+    return None
 
 
 def main() -> None:
@@ -28,29 +84,9 @@ def main() -> None:
 
     # With all the options handled, we just need to do the real work
     # FIXME: put your code here
-
-    # Open and insert every line in BED file into 'bed_table' table.
-    with open(args.bed.name) as file:
-        bed_table = Table() # Create a Table object.
-        line = file.readline() # Read one line in the BED file.
-        while line: # Run this loop while we still have a line to read in BED file.
-            bed_table.add_line(parse_line(line)) # Add the line to our 'bed_table' object.
-            line = file.readline() # Read the next line.
-
-    # Open the file we want to query.
-    with open(args.query.name) as file:
-        line = file.readline() # Read one line in the query file.
-        while line: # Run this loop while we still have a line to read in query file.
-            chrom, start, end = line.split() # Get chrom, chrom_start, chrom_end in query file.
-            # Get every line in 'bed_table' that have the same chromosome 
-            # in the line of query we currently read
-            bedline = bed_table.get_chrom(chrom)
-            # Check every line in 'bed_table' that overlaps with our query.
-            # Then print the overlapping line to our output_file using print_line().
-            for i in range(0,len(bedline)):
-                if bedline[i].chrom_start >= int(start) and bedline[i].chrom_end <= int(end):
-                    print_line(bedline[i], args.outfile)
-            line = file.readline() # Read the next line.
+    
+    # Call process_query() function
+    process_query(args.bed, args.query, args.outfile)
 
 if __name__ == '__main__':
     main()
